@@ -223,11 +223,17 @@ class MessageHandler:
 
     @patchable
     async def resolve_future(self, client, message, *args):
-        listener_type = ListenerTypes.MESSAGE
-        listener, identifier = client.match_listener(
-            (message.chat.id, message.from_user.id, message.id),
-            listener_type,
-        )
+        try:
+            if message.from_user is None:
+                _id = message.sender_chat.id
+            else:
+                _id = message.from_user.id
+            listener, identifier = client.match_listener(
+                (message.chat.id, _id, message.id),
+                ListenerTypes.MESSAGE,
+            )
+        except AttributeError:
+            listener = identifier = 0
         listener_does_match = False
         if listener:
             filters = listener["filters"]
