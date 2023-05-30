@@ -244,7 +244,7 @@ class MessageHandler:
         if listener_does_match:
             if not listener["future"].done():
                 listener["future"].set_result(message)
-                del client.listeners[listener_type][identifier]
+                del client.listeners[ListenerTypes.MESSAGE][identifier]
                 raise pyrogram.StopPropagation
         else:
             await self.registered_handler(client, message, *args)
